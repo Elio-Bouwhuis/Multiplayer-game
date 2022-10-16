@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5860603833128341982}
   - component: {fileID: 5860603833128341969}
+  - component: {fileID: -6538206119848455064}
+  - component: {fileID: 6516224581679772538}
   m_Layer: 0
   m_Name: 'Player '
   m_TagString: Untagged
@@ -49,6 +51,45 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &-6538206119848455064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5860603833128341968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de22b6eb21f313744b4a379f6c10cd41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  force: 1
+--- !u!114 &6516224581679772538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5860603833128341968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df2868252ab5c4d1da357e8f11f1b524, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 1
+  SyncPositionY: 0
+  SyncPositionZ: 1
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &5860603833504656923
 GameObject:
   m_ObjectHideFlags: 0
@@ -61,7 +102,7 @@ GameObject:
   - component: {fileID: 5860603833504656999}
   - component: {fileID: 5860603833504656998}
   - component: {fileID: 5860603833504656921}
-  - component: {fileID: 4847964218865704947}
+  - component: {fileID: 7011633904425569083}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -148,7 +189,7 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &4847964218865704947
+--- !u!54 &7011633904425569083
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

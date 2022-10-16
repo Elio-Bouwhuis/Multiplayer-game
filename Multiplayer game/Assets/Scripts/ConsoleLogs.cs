@@ -24,9 +24,9 @@ public class ConsoleLogs : MonoBehaviour
         output = logString;
         stack = stackTrace;
         myLog = output + "\n" + myLog;
-        if (myLog.Length > 5000)
+        if (myLog.Length > 2000)
         {
-            myLog = myLog.Substring(0, 4000);
+            myLog = myLog.Substring(0, 1000);
         }
     }
 
@@ -34,7 +34,7 @@ public class ConsoleLogs : MonoBehaviour
     {
         //if (!Application.isEditor) //Do not display in editor ( or you can use the UNITY_EDITOR macro to also disable the rest)
         {
-            myLog = GUI.TextArea(new Rect(10, 10, Screen.width - 10, Screen.height - 10), myLog);
+            myLog = GUI.TextArea(new Rect(1, 1, Screen.width - 500, Screen.height - 1), myLog);
         }
     }
     //#endif
