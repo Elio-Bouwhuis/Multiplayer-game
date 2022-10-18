@@ -11,7 +11,9 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private Transform spawnedObjectPrefab;
     private Transform spawnedObjectTransform;
 
-    private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
+    private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
+    /*private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
         new MyCustomData {
             _int = 56,
             _bool = true,
@@ -29,14 +31,18 @@ public class PlayerNetwork : NetworkBehaviour
             serializer.SerializeValue(ref _bool);
             serializer.SerializeValue(ref message);
         }
-    }
+    }*/
 
     public override void OnNetworkSpawn()
     {
-        randomNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) =>
+        randomNumber.OnValueChanged += (int previousValue, int newValue) =>
+        {
+            Debug.Log(OwnerClientId + " " + randomNumber.Value);
+        };
+        /*randomNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) =>
         {
             Debug.Log(OwnerClientId + " random number: " + newValue._int + " " + newValue._bool + " " + newValue.message);
-        };
+        };*/
     }
 
     private void Update()
@@ -45,6 +51,7 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
+            randomNumber.Value = Random.Range(0, 100);
             spawnedObjectTransform = Instantiate(spawnedObjectPrefab);
             spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
             //TestClientRpc();
@@ -64,7 +71,7 @@ public class PlayerNetwork : NetworkBehaviour
         transform.Translate(Input.GetAxisRaw("Horizontal") * force, 0, Input.GetAxisRaw("Vertical") * force);
     }
 
-    [ServerRpc]
+    /*[ServerRpc]
     private void TestServerRpc(ServerRpcParams serverRpcParams)
     {
         Debug.Log("test server rpc " + OwnerClientId + " " + serverRpcParams.Receive.SenderClientId);
@@ -74,5 +81,5 @@ public class PlayerNetwork : NetworkBehaviour
     private void TestClientRpc()
     {
         Debug.Log("TestClientRpc");
-    }
+    }*/
 }
