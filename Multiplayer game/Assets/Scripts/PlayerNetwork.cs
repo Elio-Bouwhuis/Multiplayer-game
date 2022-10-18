@@ -8,6 +8,9 @@ public class PlayerNetwork : NetworkBehaviour
 {
     public float force;
 
+    [SerializeField] private Transform spawnedObjectPrefab;
+    private Transform spawnedObjectTransform;
+
     private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
         new MyCustomData {
             _int = 56,
@@ -36,20 +39,40 @@ public class PlayerNetwork : NetworkBehaviour
         };
     }
 
-    void FixedUpdate()
+    private void Update()
     {
         if (!IsOwner) return;
 
-        transform.Translate(Input.GetAxisRaw("Horizontal") * force, 0, Input.GetAxisRaw("Vertical") * force);
-
         if (Input.GetKeyDown(KeyCode.T))
         {
-            randomNumber.Value = new MyCustomData
+            spawnedObjectTransform = Instantiate(spawnedObjectPrefab);
+            spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
+            //TestClientRpc();
+            /*randomNumber.Value = new MyCustomData
             {
                 _int = 10,
                 _bool = false,
                 message = "wooo dit werkt",
-            };
+            };*/
         }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            Destroy(spawnedObjectTransform.gameObject);
+        }
+
+        transform.Translate(Input.GetAxisRaw("Horizontal") * force, 0, Input.GetAxisRaw("Vertical") * force);
+    }
+
+    [ServerRpc]
+    private void TestServerRpc(ServerRpcParams serverRpcParams)
+    {
+        Debug.Log("test server rpc " + OwnerClientId + " " + serverRpcParams.Receive.SenderClientId);
+    }
+
+    [ClientRpc]
+    private void TestClientRpc()
+    {
+        Debug.Log("TestClientRpc");
     }
 }
