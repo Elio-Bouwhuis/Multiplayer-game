@@ -11,7 +11,7 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private Transform spawnedObjectPrefab;
     private Transform spawnedObjectTransform;
 
-    private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<int> playerScore = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     /*private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
         new MyCustomData {
@@ -35,9 +35,9 @@ public class PlayerNetwork : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        randomNumber.OnValueChanged += (int previousValue, int newValue) =>
+        playerScore.OnValueChanged += (int previousValue, int newValue) =>
         {
-            Debug.Log(OwnerClientId + " " + randomNumber.Value);
+            Debug.Log(OwnerClientId + " " + playerScore.Value);
         };
         /*randomNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) =>
         {
@@ -51,7 +51,7 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            randomNumber.Value = Random.Range(0, 100);
+            playerScore.Value += 1;
             spawnedObjectTransform = Instantiate(spawnedObjectPrefab);
             spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
             //TestClientRpc();
