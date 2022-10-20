@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
+using TMPro;
 
 public class NetworkManagerUI : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] private Button hostBtn;
     [SerializeField] private Button clientBtn;
     [SerializeField] private Image backgroundImage;
+    [SerializeField] private TextMeshProUGUI scorePlayerOne;
+    [SerializeField] private TextMeshProUGUI scorePlayerTwo;
 
     private void Awake()
     {
@@ -20,15 +23,18 @@ public class NetworkManagerUI : MonoBehaviour
             Destroy(serverBtn.gameObject);
             Destroy(clientBtn.gameObject);
             Destroy(backgroundImage.gameObject);
+            scorePlayerOne.enabled = true;
+            scorePlayerTwo.enabled = true;
         });
         hostBtn.onClick.AddListener(() =>
         {
-            //NetworkManager.SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
             NetworkManager.Singleton.StartHost();
             Destroy(hostBtn.gameObject);
             Destroy(serverBtn.gameObject);
             Destroy(clientBtn.gameObject);
             Destroy(backgroundImage.gameObject);
+            scorePlayerOne.enabled = true;
+            scorePlayerTwo.enabled = true;
         });
         clientBtn.onClick.AddListener(() =>
         {
@@ -37,6 +43,8 @@ public class NetworkManagerUI : MonoBehaviour
             Destroy(serverBtn.gameObject);
             Destroy(clientBtn.gameObject);
             Destroy(backgroundImage.gameObject);
+            scorePlayerOne.enabled = true;
+            scorePlayerTwo.enabled = true;
         });
     }
 }

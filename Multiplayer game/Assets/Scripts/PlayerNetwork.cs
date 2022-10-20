@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Collections;
+using TMPro;
 
 public class PlayerNetwork : NetworkBehaviour
 {
@@ -11,7 +12,10 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private Transform spawnedObjectPrefab;
     private Transform spawnedObjectTransform;
 
-    private NetworkVariable<int> playerScore = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    [SerializeField] private TextMeshProUGUI scorePlayerOne;
+    [SerializeField] private TextMeshProUGUI scorePlayerTwo;
+
+    private NetworkVariable<int> playerScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     /*private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
         new MyCustomData {
@@ -38,6 +42,7 @@ public class PlayerNetwork : NetworkBehaviour
         playerScore.OnValueChanged += (int previousValue, int newValue) =>
         {
             Debug.Log(OwnerClientId + " " + playerScore.Value);
+            scorePlayerOne.text = "Player 1: " + playerScore.Value;
         };
         /*randomNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) =>
         {
@@ -51,7 +56,7 @@ public class PlayerNetwork : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            playerScore.Value += 1;
+            //playerScore.Value += 1;
             spawnedObjectTransform = Instantiate(spawnedObjectPrefab);
             spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
             //TestClientRpc();
@@ -62,13 +67,17 @@ public class PlayerNetwork : NetworkBehaviour
                 message = "wooo dit werkt",
             };*/
         }
-
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            Destroy(spawnedObjectTransform.gameObject);
-        }
-
         transform.Translate(Input.GetAxisRaw("Horizontal") * force, 0, Input.GetAxisRaw("Vertical") * force);
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag == "Ball")
+        {
+            playerScore.Value += 1;
+            spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
+            Debug.Log("ball destoyed");
+        }
     }
 
     /*[ServerRpc]
