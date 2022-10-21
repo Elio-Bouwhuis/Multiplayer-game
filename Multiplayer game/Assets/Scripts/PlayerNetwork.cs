@@ -12,10 +12,10 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private Transform spawnedObjectPrefab;
     private Transform spawnedObjectTransform;
 
-    [SerializeField] private TextMeshProUGUI scorePlayerOne;
-    [SerializeField] private TextMeshProUGUI scorePlayerTwo;
+    [SerializeField] TextMeshProUGUI scorePlayerOne;
+    [SerializeField] TextMeshProUGUI scorePlayerTwo;
 
-    private NetworkVariable<int> playerScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<int> playerScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
     /*private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
         new MyCustomData {
@@ -39,6 +39,7 @@ public class PlayerNetwork : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        scorePlayerOne = GameObject.Find("ScorePlayerOne").GetComponent<TextMeshProUGUI>();
         playerScore.OnValueChanged += (int previousValue, int newValue) =>
         {
             Debug.Log(OwnerClientId + " " + playerScore.Value);

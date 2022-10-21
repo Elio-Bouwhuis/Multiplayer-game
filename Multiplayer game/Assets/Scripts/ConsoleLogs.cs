@@ -34,7 +34,7 @@ public class ConsoleLogs : MonoBehaviour
     {
         //if (!Application.isEditor) //Do not display in editor ( or you can use the UNITY_EDITOR macro to also disable the rest)
         {
-            myLog = GUI.TextArea(new Rect(1, 1, Screen.width - 500, Screen.height - 1), myLog);
+            myLog = GUI.TextArea(new Rect(1, 1, Screen.width - 700, Screen.height - 1), myLog);
         }
     }
     //#endif

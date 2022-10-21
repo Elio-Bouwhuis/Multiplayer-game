@@ -13,6 +13,7 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] private Image backgroundImage;
     [SerializeField] private TextMeshProUGUI scorePlayerOne;
     [SerializeField] private TextMeshProUGUI scorePlayerTwo;
+    [SerializeField] private GameObject inputField;
 
     private void Awake()
     {
@@ -23,6 +24,7 @@ public class NetworkManagerUI : MonoBehaviour
             Destroy(serverBtn.gameObject);
             Destroy(clientBtn.gameObject);
             Destroy(backgroundImage.gameObject);
+            Destroy(inputField.gameObject);
             scorePlayerOne.enabled = true;
             scorePlayerTwo.enabled = true;
         });
@@ -33,6 +35,7 @@ public class NetworkManagerUI : MonoBehaviour
             Destroy(serverBtn.gameObject);
             Destroy(clientBtn.gameObject);
             Destroy(backgroundImage.gameObject);
+            Destroy(inputField.gameObject);
             scorePlayerOne.enabled = true;
             scorePlayerTwo.enabled = true;
         });
@@ -43,6 +46,7 @@ public class NetworkManagerUI : MonoBehaviour
             Destroy(serverBtn.gameObject);
             Destroy(clientBtn.gameObject);
             Destroy(backgroundImage.gameObject);
+            Destroy(inputField.gameObject);
             scorePlayerOne.enabled = true;
             scorePlayerTwo.enabled = true;
         });
