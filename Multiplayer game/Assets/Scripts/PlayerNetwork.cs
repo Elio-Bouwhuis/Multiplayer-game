@@ -44,6 +44,8 @@ public class PlayerNetwork : NetworkBehaviour
         {
             Debug.Log(OwnerClientId + " " + playerScore.Value);
             scorePlayerOne.text = "Player 1: " + playerScore.Value;
+            //TestClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> { 1 } } });
+            TestServerRpc(new ServerRpcParams());
         };
         /*randomNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) =>
         {
@@ -76,20 +78,33 @@ public class PlayerNetwork : NetworkBehaviour
         if (other.gameObject.tag == "Ball")
         {
             playerScore.Value += 1;
-            spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
+            //spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
             Debug.Log("ball destoyed");
         }
     }
 
-    /*[ServerRpc]
-    private void TestServerRpc(ServerRpcParams serverRpcParams)
+    [ServerRpc(RequireOwnership = false)]
+    private void TestServerRpc(ServerRpcParams serverRpcParams = default)
     {
-        Debug.Log("test server rpc " + OwnerClientId + " " + serverRpcParams.Receive.SenderClientId);
+        var clientId = serverRpcParams.Receive.SenderClientId;
+        if (NetworkManager.ConnectedClients.ContainsKey(clientId))
+        {
+            var client = NetworkManager.ConnectedClients[clientId];
+            Debug.Log(client);
+            /*if(clientId == 1)
+            {
+                scorePlayerTwo = GameObject.Find("ScorePlayerTwo").GetComponent<TextMeshProUGUI>();
+                scorePlayerTwo.text = "Player 2: " + playerScore.Value;
+            }*/
+        }
+        //Debug.Log("test server rpc " + OwnerClientId + " " + serverRpcParams.Receive.SenderClientId);
     }
 
-    [ClientRpc]
-    private void TestClientRpc()
+    /*[ClientRpc]
+    private void TestClientRpc(ClientRpcParams clientRpcParams)
     {
+        //scorePlayerTwo = GameObject.Find("ScorePlayerTwo").GetComponent<TextMeshProUGUI>();
+        //scorePlayerTwo.text = "Player 2: " + playerScore.Value;
         Debug.Log("TestClientRpc");
     }*/
 }
