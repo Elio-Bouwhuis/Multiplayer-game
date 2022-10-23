@@ -74,6 +74,10 @@ MonoBehaviour:
   spawnedObjectPrefab: {fileID: 1575770950128958933, guid: 3c290c70c8015b343900fab87623db8e, type: 3}
   scorePlayerOne: {fileID: 8104221778599992054, guid: e0b45dcca58da064c855324dc44eea32, type: 3}
   scorePlayerTwo: {fileID: 1648198710796596883, guid: 194aaefaa6d2399419012fa6716de76d, type: 3}
+  gameTimer: {fileID: 8619799229152638377, guid: 14928cf4c953d0b49afb48cf8488b517, type: 3}
+  startBtn: {fileID: 7465069355417304374, guid: 5228068cbee33ca4cb8d20fc2ef8b5c2, type: 3}
+  playerScore:
+    m_InternalValue: 0
 --- !u!114 &6516224581679772538
 MonoBehaviour:
   m_ObjectHideFlags: 0
