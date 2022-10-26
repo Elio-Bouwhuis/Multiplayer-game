@@ -22,8 +22,11 @@ public class NetworkManagerUI : MonoBehaviour
     private int time = 300;
     private float timePassed = 0f;
 
+    private bool toggle = false;
+
     private void Awake()
     {
+        gameTimer = GameObject.Find("TimeLeft").GetComponent<TextMeshProUGUI>();
         time = 300;
         timePassed = 0f;
         serverBtn.onClick.AddListener(() =>
@@ -64,25 +67,33 @@ public class NetworkManagerUI : MonoBehaviour
         });
         startBtnBtn.onClick.AddListener(() =>
         {
+            TimeCounter();
             Debug.Log("start button clicked");
             gameTimer.enabled = true;
-            //gameTimer = GameObject.Find("TimeLeft").GetComponent<TextMeshProUGUI>();
             Destroy(startBtn.gameObject);
         });
     }
 
+    private void TimeCounter()
+    {
+        toggle = !toggle;
+    }
+
     private void Update()
     {
-        timePassed += Time.deltaTime;
-        if (timePassed > 1.0f)
+        if (toggle)
         {
-            time -= 1;
-            timePassed = 0f;
-            Debug.Log(time);
-            //gameTimer.text = "Time left: " + i;
-            if(time == 0)
+            timePassed += Time.deltaTime;
+            if (timePassed > 1.0f)
             {
-                Debug.Log("Game Over!");
+                time -= 1;
+                timePassed = 0f;
+                Debug.Log(time);
+                gameTimer.text = "Time left: " + time;
+                if (time == 0)
+                {
+                    Debug.Log("Game Over!");
+                }
             }
         }
     }
