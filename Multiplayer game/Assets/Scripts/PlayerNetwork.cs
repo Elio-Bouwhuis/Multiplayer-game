@@ -4,16 +4,26 @@ using UnityEngine;
 using Unity.Netcode;
 using Unity.Collections;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerNetwork : NetworkBehaviour
 {
     public float force;
+
+    private int time = 300;
+    private float timePassed = 0f;
+
+    private bool toggle = false;
 
     [SerializeField] private Transform spawnedObjectPrefab;
     private Transform spawnedObjectTransform;
 
     [SerializeField] TextMeshProUGUI scorePlayerOne;
     [SerializeField] TextMeshProUGUI scorePlayerTwo;
+    [SerializeField] TextMeshProUGUI gameTimer;
+
+    [SerializeField] private Button startBtnBtn;
+    [SerializeField] private GameObject startBtn;
 
     public NetworkVariable<int> playerScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
@@ -51,6 +61,21 @@ public class PlayerNetwork : NetworkBehaviour
         {
             Debug.Log(OwnerClientId + " random number: " + newValue._int + " " + newValue._bool + " " + newValue.message);
         };*/
+
+
+        gameTimer = GameObject.Find("TimeLeft").GetComponent<TextMeshProUGUI>();
+        time = 300;
+        timePassed = 0f;
+        Debug.Log(timePassed + " " +  time);
+        startBtnBtn.onClick.AddListener(TimeCounter);
+    }
+
+    private void TimeCounter()
+    {
+        toggle = !toggle;
+        Debug.Log("start button clicked");
+        gameTimer.enabled = true;
+        Destroy(startBtn.gameObject);
     }
 
     private void Update()
@@ -71,6 +96,22 @@ public class PlayerNetwork : NetworkBehaviour
             };*/
         }
         transform.Translate(Input.GetAxisRaw("Horizontal") * force, 0, Input.GetAxisRaw("Vertical") * force);
+
+        if (toggle)
+        {
+            timePassed += Time.deltaTime;
+            if (timePassed > 1.0f)
+            {
+                time -= 1;
+                timePassed = 0f;
+                Debug.Log(time);
+                gameTimer.text = "Time left: " + time;
+                if (time == 0)
+                {
+                    Debug.Log("Game Over!");
+                }
+            }
+        }
     }
 
     private void OnCollisionEnter(Collision other)

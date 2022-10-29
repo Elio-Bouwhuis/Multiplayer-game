@@ -514,7 +514,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &379774760
 Transform:
   m_ObjectHideFlags: 0
@@ -1151,13 +1151,11 @@ MonoBehaviour:
   serverBtn: {fileID: 230241995}
   hostBtn: {fileID: 1608039904}
   clientBtn: {fileID: 548351701}
-  startBtnBtn: {fileID: 2118170979}
   backgroundImage: {fileID: 2119649415}
   scorePlayerOne: {fileID: 1611868979}
   scorePlayerTwo: {fileID: 795242105}
   inputField: {fileID: 1988707510}
   startBtn: {fileID: 2118170977}
-  gameTimer: {fileID: 986390198}
 --- !u!1 &665026027
 GameObject:
   m_ObjectHideFlags: 0
@@ -2267,7 +2265,7 @@ MonoBehaviour:
   m_MaxConnectAttempts: 60
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
-    Address: 192.168.2.9
+    Address: 145.76.236.209
     Port: 7777
     ServerListenAddress: 
   DebugSimulator:

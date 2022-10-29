@@ -10,25 +10,25 @@ public class NetworkManagerUI : MonoBehaviour
     [SerializeField] private Button serverBtn;
     [SerializeField] private Button hostBtn;
     [SerializeField] private Button clientBtn;
-    [SerializeField] private Button startBtnBtn;
+    //[SerializeField] private Button startBtnBtn;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private TextMeshProUGUI scorePlayerOne;
     [SerializeField] private TextMeshProUGUI scorePlayerTwo;
     [SerializeField] private GameObject inputField;
     [SerializeField] private GameObject startBtn;
 
-    [SerializeField] TextMeshProUGUI gameTimer;
+    //[SerializeField] TextMeshProUGUI gameTimer;
 
-    private int time = 300;
-    private float timePassed = 0f;
+    //private int time = 300;
+    //private float timePassed = 0f;
 
-    private bool toggle = false;
+    //private bool toggle = false;
 
     private void Awake()
     {
-        gameTimer = GameObject.Find("TimeLeft").GetComponent<TextMeshProUGUI>();
-        time = 300;
-        timePassed = 0f;
+        //gameTimer = GameObject.Find("TimeLeft").GetComponent<TextMeshProUGUI>();
+        //time = 300;
+        //timePassed = 0f;
         serverBtn.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartServer();
@@ -65,21 +65,21 @@ public class NetworkManagerUI : MonoBehaviour
             scorePlayerTwo.enabled = true;
             startBtn.SetActive(true);
         });
-        startBtnBtn.onClick.AddListener(() =>
+        /*startBtnBtn.onClick.AddListener(() =>
         {
             TimeCounter();
             Debug.Log("start button clicked");
             gameTimer.enabled = true;
             Destroy(startBtn.gameObject);
-        });
+        });*/
     }
 
-    private void TimeCounter()
+    /*private void TimeCounter()
     {
         toggle = !toggle;
-    }
+    }*/
 
-    private void Update()
+    /*private void Update()
     {
         if (toggle)
         {
@@ -96,5 +96,5 @@ public class NetworkManagerUI : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
 }
