@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
 
-public class CheckIPConnection : NetworkBehaviour
+public class CheckIPConnection : MonoBehaviour
 {
 
     [SerializeField] Unity.Netcode.Transports.UTP.UnityTransport unityTransport;
@@ -13,9 +14,9 @@ public class CheckIPConnection : NetworkBehaviour
     public void UpdateAdress()
     {
         //unityTransport.ConnectionData.Address = inputField.text;
-        NetworkManager.Singleton.GetComponent<Unity.Netcode.Transports.UTP.UnityTransport>().SetConnectionData(
+        NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
             inputField.text,  // The IP address is a string
-            7777, // The port number is an unsigned short (ushort)12345
+            (ushort)7777, // The port number is an unsigned short (ushort)12345
             "0.0.0.0" // The server listen address is a string.
         );
     }

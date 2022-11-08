@@ -10,20 +10,20 @@ public class PlayerNetwork : NetworkBehaviour
 {
     public float force;
 
-    private int time = 300;
-    private float timePassed = 0f;
+    //private int time = 300;
+    //private float timePassed = 0f;
 
-    private bool toggle = false;
+    //private bool toggle = false;
 
     [SerializeField] private Transform spawnedObjectPrefab;
     private Transform spawnedObjectTransform;
 
     [SerializeField] TextMeshProUGUI scorePlayerOne;
     [SerializeField] TextMeshProUGUI scorePlayerTwo;
-    [SerializeField] TextMeshProUGUI gameTimer;
+    //[SerializeField] TextMeshProUGUI gameTimer;
 
-    [SerializeField] private Button startBtnBtn;
-    [SerializeField] private GameObject startBtn;
+    //[SerializeField] private Button startBtnBtn;
+    //[SerializeField] private GameObject startBtn;
 
     public NetworkVariable<int> playerScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
@@ -55,35 +55,25 @@ public class PlayerNetwork : NetworkBehaviour
             Debug.Log(OwnerClientId + " " + playerScore.Value);
             scorePlayerOne.text = "Player 1: " + playerScore.Value;
             //TestClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> { 1 } } });
-            TestServerRpc(new ServerRpcParams());
+            //TestServerRpc(new ServerRpcParams());
         };
         /*randomNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) =>
         {
             Debug.Log(OwnerClientId + " random number: " + newValue._int + " " + newValue._bool + " " + newValue.message);
         };*/
-
-
-        gameTimer = GameObject.Find("TimeLeft").GetComponent<TextMeshProUGUI>();
-        time = 300;
-        timePassed = 0f;
-        Debug.Log(timePassed + " " +  time);
-        startBtnBtn.onClick.AddListener(TimeCounter);
     }
-
-    private void TimeCounter()
+    private void Start()
     {
-        toggle = !toggle;
-        Debug.Log("start button clicked");
-        gameTimer.enabled = true;
-        Destroy(startBtn.gameObject);
+        AfterClientSetupServerRpc();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (!IsOwner) return;
 
         if (Input.GetKeyDown(KeyCode.T))
         {
+            
             //playerScore.Value += 1;
             spawnedObjectTransform = Instantiate(spawnedObjectPrefab);
             spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
@@ -96,30 +86,16 @@ public class PlayerNetwork : NetworkBehaviour
             };*/
         }
         transform.Translate(Input.GetAxisRaw("Horizontal") * force, 0, Input.GetAxisRaw("Vertical") * force);
-
-        if (toggle)
-        {
-            timePassed += Time.deltaTime;
-            if (timePassed > 1.0f)
-            {
-                time -= 1;
-                timePassed = 0f;
-                Debug.Log(time);
-                gameTimer.text = "Time left: " + time;
-                if (time == 0)
-                {
-                    Debug.Log("Game Over!");
-                }
-            }
-        }
     }
 
     private void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.tag == "Ball")
         {
-            playerScore.Value += 1;
-            //spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
+
+           // spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
+            NetworkManagerUI lobbyManager = GameObject.Find("NetworkManagerUI").GetComponent<NetworkManagerUI>();
+            lobbyManager.BallCollectedServerRpc(OwnerClientId); ;
             Debug.Log("ball destoyed");
         }
     }
@@ -128,16 +104,8 @@ public class PlayerNetwork : NetworkBehaviour
     private void TestServerRpc(ServerRpcParams serverRpcParams = default)
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
-        if (NetworkManager.ConnectedClients.ContainsKey(clientId))
-        {
-            var client = NetworkManager.ConnectedClients[clientId];
-            Debug.Log(client);
-            /*if(clientId == 1)
-            {
-                scorePlayerTwo = GameObject.Find("ScorePlayerTwo").GetComponent<TextMeshProUGUI>();
-                scorePlayerTwo.text = "Player 2: " + playerScore.Value;
-            }*/
-        }
+        Debug.Log(clientId);
+
         //Debug.Log("test server rpc " + OwnerClientId + " " + serverRpcParams.Receive.SenderClientId);
     }
 
@@ -148,4 +116,21 @@ public class PlayerNetwork : NetworkBehaviour
         //scorePlayerTwo.text = "Player 2: " + playerScore.Value;
         Debug.Log("TestClientRpc");
     }*/
+
+    [ServerRpc (RequireOwnership = false)]
+    public void AfterClientSetupServerRpc()
+    {
+        NetworkManagerUI lobbyManager = GameObject.Find("NetworkManagerUI").GetComponent<NetworkManagerUI>();
+        lobbyManager.AddNewPlayer(this, OwnerClientId);
+        Debug.Log($"Clientcontroller for clientID {OwnerClientId} succesfully setup!");
+    }
+
+    [ClientRpc]
+    public void UpdateScoreClientRpc(ulong playerID)
+    {
+        Debug.Log($"{OwnerClientId} gained one point!");
+        if(playerID == OwnerClientId) playerScore.Value += 1;
+        else Debug.Log($"And that wasn't me :(");
+    }
+
 }
