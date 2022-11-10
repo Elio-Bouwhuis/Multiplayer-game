@@ -10,8 +10,10 @@ public class PlayerNetwork : NetworkBehaviour
 {
     public float force;
 
-    //private int time = 300;
-    //private float timePassed = 0f;
+    public bool gameStarted = false;
+
+    private int time = 300;
+    private float timePassed = 0f;
 
     //private bool toggle = false;
 
@@ -20,6 +22,7 @@ public class PlayerNetwork : NetworkBehaviour
 
     [SerializeField] TextMeshProUGUI scorePlayerOne;
     [SerializeField] TextMeshProUGUI scorePlayerTwo;
+
     //[SerializeField] TextMeshProUGUI gameTimer;
 
     //[SerializeField] private Button startBtnBtn;
@@ -49,6 +52,8 @@ public class PlayerNetwork : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        time = 300;
+        timePassed = 0f;
         scorePlayerOne = GameObject.Find("ScorePlayerOne").GetComponent<TextMeshProUGUI>();
         playerScore.OnValueChanged += (int previousValue, int newValue) =>
         {
@@ -71,12 +76,24 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (!IsOwner) return;
 
+        timePassed += Time.deltaTime;
+
+        if (timePassed > 1.0f && gameStarted == true)
+        {
+            time -= 1;
+            timePassed = 0f;
+            if(time < 300)
+            {
+                Vector3 randomSpawnPosition = new Vector3(Random.Range(-15, 9), 0, Random.Range(-3, 18));
+                spawnedObjectTransform = Instantiate(spawnedObjectPrefab, randomSpawnPosition, Quaternion.identity);
+                spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
+                Debug.Log(time);
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.T))
         {
-            
             //playerScore.Value += 1;
-            spawnedObjectTransform = Instantiate(spawnedObjectPrefab);
-            spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
             //TestClientRpc();
             /*randomNumber.Value = new MyCustomData
             {

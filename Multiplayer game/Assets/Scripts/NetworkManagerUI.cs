@@ -4,15 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Netcode;
 using TMPro;
+using Unity.Netcode.Transports.UTP;
 
 public class NetworkManagerUI : NetworkBehaviour
 {
     Dictionary<ulong, PlayerNetwork> clientControllers = new Dictionary<ulong, PlayerNetwork>();
 
-    [SerializeField] private Button serverBtn;
     [SerializeField] private Button hostBtn;
     [SerializeField] private Button clientBtn;
     [SerializeField] private Button startBtnBtn;
+    [SerializeField] private Button saveBtn;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private TextMeshProUGUI scorePlayerOne;
     [SerializeField] private TextMeshProUGUI scorePlayerTwo;
@@ -31,24 +32,12 @@ public class NetworkManagerUI : NetworkBehaviour
         gameTimer = GameObject.Find("TimeLeft").GetComponent<TextMeshProUGUI>();
         time = 300;
         timePassed = 0f;
-        serverBtn.onClick.AddListener(() =>
-        {
-            NetworkManager.Singleton.StartServer();
-            Destroy(hostBtn.gameObject);
-            Destroy(serverBtn.gameObject);
-            Destroy(clientBtn.gameObject);
-            Destroy(backgroundImage.gameObject);
-            Destroy(inputField.gameObject);
-            scorePlayerOne.enabled = true;
-            scorePlayerTwo.enabled = true;
-            startBtn.SetActive(true);
-        });
         hostBtn.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartHost();
             Destroy(hostBtn.gameObject);
-            Destroy(serverBtn.gameObject);
             Destroy(clientBtn.gameObject);
+            Destroy(saveBtn.gameObject);
             Destroy(backgroundImage.gameObject);
             Destroy(inputField.gameObject);
             scorePlayerOne.enabled = true;
@@ -59,8 +48,8 @@ public class NetworkManagerUI : NetworkBehaviour
         {
             NetworkManager.Singleton.StartClient();
             Destroy(hostBtn.gameObject);
-            Destroy(serverBtn.gameObject);
             Destroy(clientBtn.gameObject);
+            Destroy(saveBtn.gameObject);
             Destroy(backgroundImage.gameObject);
             Destroy(inputField.gameObject);
             scorePlayerOne.enabled = true;
@@ -69,6 +58,10 @@ public class NetworkManagerUI : NetworkBehaviour
         });
         startBtnBtn.onClick.AddListener(() =>
         {
+            foreach (KeyValuePair<ulong, PlayerNetwork> entry in clientControllers)
+            {
+                entry.Value.gameStarted = true;
+            }
             StartGameClientRpc();
         });
     }
@@ -79,7 +72,7 @@ public class NetworkManagerUI : NetworkBehaviour
         TimeCounter();
         Debug.Log("start button clicked");
         gameTimer.enabled = true;
-        Destroy(startBtn.gameObject);
+        Destroy(startBtn);
     }
 
     private void TimeCounter()
@@ -114,7 +107,6 @@ public class NetworkManagerUI : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void BallCollectedServerRpc(ulong playerID)
     {
-        
         Debug.Log($"{playerID} collected a point!");
         clientControllers[playerID].UpdateScoreClientRpc(playerID);
     }
