@@ -4,6 +4,8 @@ using UnityEngine;
 using TMPro;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
+using System.Net;
+using System.Net.Sockets;
 
 public class CheckIPConnection : MonoBehaviour
 {
@@ -13,12 +15,26 @@ public class CheckIPConnection : MonoBehaviour
 
     public void UpdateAdress()
     {
-        Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address);
-        Debug.Log(inputField.text.GetType());
+        IPHostEntry host;
+        string localIP = "0.0.0.0";
+        if (NetworkManager.Singleton.IsServer)
+        {
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = ip.ToString();
+                    break;
+                }
+            }
+        }
+
+        Debug.Log(localIP);
         string newIp = inputField.text;
         //unityTransport.ConnectionData.Address = inputField.text;
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
-            "127.0.0.1",  // The IP address is a string
+            localIP,  // The IP address is a string
             (ushort)7777, // The port number is an unsigned short (ushort)12345
             "0.0.0.0"
         );

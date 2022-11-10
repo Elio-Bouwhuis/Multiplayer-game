@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using Unity.Netcode;
 using TMPro;
 using Unity.Netcode.Transports.UTP;
+using System.Net;
+using System.Net.Sockets;
 
 public class NetworkManagerUI : NetworkBehaviour
 {
@@ -35,6 +37,32 @@ public class NetworkManagerUI : NetworkBehaviour
         hostBtn.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartHost();
+
+            IPHostEntry host;
+            string localIP = "0.0.0.0";
+            if (NetworkManager.Singleton.IsServer)
+            {
+                host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (IPAddress ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        localIP = ip.ToString();
+                        break;
+                    }
+                }
+            }
+
+            Debug.Log(localIP);
+            //string newIp = inputField.text;
+            //unityTransport.ConnectionData.Address = inputField.text;
+            NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
+                localIP,  // The IP address is a string
+                (ushort)7777, // The port number is an unsigned short (ushort)12345
+                "0.0.0.0"
+            );
+            Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address);
+
             Destroy(hostBtn.gameObject);
             Destroy(clientBtn.gameObject);
             Destroy(saveBtn.gameObject);
