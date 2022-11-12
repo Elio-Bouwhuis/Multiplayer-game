@@ -7,6 +7,7 @@ using TMPro;
 using Unity.Netcode.Transports.UTP;
 using System.Net;
 using System.Net.Sockets;
+using UnityEngine.SceneManagement;
 
 public class NetworkManagerUI : NetworkBehaviour
 {
@@ -16,11 +17,13 @@ public class NetworkManagerUI : NetworkBehaviour
     [SerializeField] private Button clientBtn;
     [SerializeField] private Button startBtnBtn;
     [SerializeField] private Button saveBtn;
+    [SerializeField] private Button quitBtnBtn;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private TextMeshProUGUI scorePlayerOne;
     [SerializeField] private TextMeshProUGUI scorePlayerTwo;
     [SerializeField] private GameObject inputField;
     [SerializeField] private GameObject startBtn;
+    [SerializeField] private GameObject quitBtn;
 
     [SerializeField] TextMeshProUGUI gameTimer;
 
@@ -75,32 +78,6 @@ public class NetworkManagerUI : NetworkBehaviour
         clientBtn.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartClient();
-
-            IPHostEntry host;
-            string localIP = "0.0.0.0";
-            if (NetworkManager.Singleton.IsServer)
-            {
-                host = Dns.GetHostEntry(Dns.GetHostName());
-                foreach (IPAddress ip in host.AddressList)
-                {
-                    if (ip.AddressFamily == AddressFamily.InterNetwork)
-                    {
-                        localIP = ip.ToString();
-                        break;
-                    }
-                }
-            }
-
-            Debug.Log(localIP);
-            //string newIp = inputField.text;
-            //unityTransport.ConnectionData.Address = inputField.text;
-            NetworkManager.Singleton.GetComponent<UnityTransport>().SetConnectionData(
-                localIP,  // The IP address is a string
-                (ushort)7777, // The port number is an unsigned short (ushort)12345
-                "0.0.0.0"
-            );
-            Debug.Log(NetworkManager.Singleton.GetComponent<UnityTransport>().ConnectionData.Address);
-
             Destroy(hostBtn.gameObject);
             Destroy(clientBtn.gameObject);
             Destroy(saveBtn.gameObject);
@@ -117,6 +94,13 @@ public class NetworkManagerUI : NetworkBehaviour
                 entry.Value.gameStarted = true;
             }
             StartGameClientRpc();
+        });
+        quitBtnBtn.onClick.AddListener(() =>
+        {
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #endif
+            Application.Quit();
         });
     }
 
@@ -141,13 +125,15 @@ public class NetworkManagerUI : NetworkBehaviour
             timePassed += Time.deltaTime;
             if (timePassed > 1.0f)
             {
-                time -= 1;
+                time -= 50;
                 timePassed = 0f;
                 //Debug.Log(time);
                 gameTimer.text = "Time left: " + time;
-                if (time == 0)
+                if (time <= 0)
                 {
+                    quitBtn.SetActive(true);
                     Debug.Log("Game Over!");
+                    Time.timeScale = 0;
                 }
             }
         }
