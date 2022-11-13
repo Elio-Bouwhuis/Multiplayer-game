@@ -7,7 +7,6 @@ using TMPro;
 using Unity.Netcode.Transports.UTP;
 using System.Net;
 using System.Net.Sockets;
-using UnityEngine.SceneManagement;
 
 public class NetworkManagerUI : NetworkBehaviour
 {
@@ -89,11 +88,8 @@ public class NetworkManagerUI : NetworkBehaviour
         });
         startBtnBtn.onClick.AddListener(() =>
         {
-            foreach (KeyValuePair<ulong, PlayerNetwork> entry in clientControllers)
-            {
-                entry.Value.gameStarted = true;
-            }
-            StartGameClientRpc();
+            GameObject.Find("Servermanager").GetComponent<ServerManager>().StartGame();
+           
         });
         quitBtnBtn.onClick.AddListener(() =>
         {
@@ -105,7 +101,7 @@ public class NetworkManagerUI : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void StartGameClientRpc()
+    public void StartGameClientRpc()
     {
         TimeCounter();
         Debug.Log("start button clicked");
@@ -125,7 +121,7 @@ public class NetworkManagerUI : NetworkBehaviour
             timePassed += Time.deltaTime;
             if (timePassed > 1.0f)
             {
-                time -= 50;
+                time -= 1;
                 timePassed = 0f;
                 //Debug.Log(time);
                 gameTimer.text = "Time left: " + time;

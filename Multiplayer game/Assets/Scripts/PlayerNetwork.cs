@@ -8,9 +8,15 @@ using UnityEngine.UI;
 
 public class PlayerNetwork : NetworkBehaviour
 {
+    ServerManager serverManager;
+
+    public int player;
+
     public float force;
 
     public bool gameStarted = false;
+
+    [SerializeField] TextMeshProUGUI gameTimer;
 
     private int time = 300;
     private float timePassed = 0f;
@@ -20,8 +26,10 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private Transform spawnedObjectPrefab;
     private Transform spawnedObjectTransform;
 
-    [SerializeField] TextMeshProUGUI scorePlayerOne;
-    [SerializeField] TextMeshProUGUI scorePlayerTwo;
+    // [SerializeField] TextMeshProUGUI scorePlayerOne;
+    // [SerializeField] TextMeshProUGUI scorePlayerTwo;
+
+    public AudioClip coinSound;
 
     //[SerializeField] TextMeshProUGUI gameTimer;
 
@@ -50,15 +58,34 @@ public class PlayerNetwork : NetworkBehaviour
         }
     }*/
 
+    [ClientRpc]
+    public void SetPlayerNumberClientRpc(int _player)
+    {
+        this.player = _player;
+    }
+
     public override void OnNetworkSpawn()
     {
+        gameTimer = GameObject.Find("TimeLeft").GetComponent<TextMeshProUGUI>();
+        serverManager = GameObject.Find("Servermanager").GetComponent<ServerManager>();
+        serverManager.AddNewPlayer(this, OwnerClientId);
         time = 300;
         timePassed = 0f;
-        scorePlayerOne = GameObject.Find("ScorePlayerOne").GetComponent<TextMeshProUGUI>();
-        playerScore.OnValueChanged += (int previousValue, int newValue) =>
+        // scorePlayerOne = GameObject.Find("ScorePlayerOne").GetComponent<TextMeshProUGUI>();
+        // scorePlayerTwo = GameObject.Find("ScorePlayerTwo").GetComponent<TextMeshProUGUI>();
+        /*playerScore.OnValueChanged += (int previousValue, int newValue) =>
         {
             Debug.Log(OwnerClientId + " " + playerScore.Value);
-            scorePlayerOne.text = "Player 1: " + playerScore.Value;
+            if(OwnerClientId == 0)
+            {
+                scorePlayerOne.text = "Player 1: " + playerScore.Value;
+                Debug.Log("PLAYER 1 ball destoyed");
+            }
+            else if(OwnerClientId == 1)
+            {
+                scorePlayerTwo.text = "Player 2: " + playerScore.Value;
+                Debug.Log("PLAYER 2 ball destoyed");
+            }
             //TestClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> { 1 } } });
             //TestServerRpc(new ServerRpcParams());
         };
@@ -69,7 +96,7 @@ public class PlayerNetwork : NetworkBehaviour
     }
     private void Start()
     {
-        AfterClientSetupServerRpc();
+        // AfterClientSetupServerRpc();
     }
 
     private void FixedUpdate()
@@ -84,10 +111,20 @@ public class PlayerNetwork : NetworkBehaviour
             timePassed = 0f;
             if(time < 300)
             {
-                Vector3 randomSpawnPosition = new Vector3(Random.Range(-15, 9), 0, Random.Range(-3, 18));
-                spawnedObjectTransform = Instantiate(spawnedObjectPrefab, randomSpawnPosition, Quaternion.identity);
-                spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
+                if (NetworkManager.Singleton.IsServer)
+                {
+                    Vector3 randomSpawnPosition = new Vector3(Random.Range(-15, 9), 0, Random.Range(-3, 18));
+                    spawnedObjectTransform = Instantiate(spawnedObjectPrefab, randomSpawnPosition, Quaternion.identity);
+                    spawnedObjectTransform.GetComponent<NetworkObject>().Spawn(true);
+                }
                 Debug.Log(time);
+                gameTimer.text = "Time left: " + time;
+                if (time <= 0)
+                {
+                    GameObject.Find("QuitBtn").SetActive(true);
+                    Debug.Log("Game Over!");
+                    Time.timeScale = 0;
+                }
             }
         }
 
@@ -109,11 +146,13 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (other.gameObject.tag == "Ball")
         {
-
-           // spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
-            NetworkManagerUI lobbyManager = GameObject.Find("NetworkManagerUI").GetComponent<NetworkManagerUI>();
-            lobbyManager.BallCollectedServerRpc(OwnerClientId); ;
-            Debug.Log("ball destoyed");
+            Debug.Log("tedsta");
+            //spawnedObjectTransform.GetComponent<NetworkObject>().networkid
+            serverManager.BallCollectedServerRpc(player);//, networkid/networkobjectid
+            Debug.Log("tedst3112da");
+            AudioSource.PlayClipAtPoint(coinSound,transform.position,1);
+            spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
+            Debug.Log("tedst3112da31231d");
         }
     }
 
@@ -137,17 +176,28 @@ public class PlayerNetwork : NetworkBehaviour
     [ServerRpc (RequireOwnership = false)]
     public void AfterClientSetupServerRpc()
     {
-        NetworkManagerUI lobbyManager = GameObject.Find("NetworkManagerUI").GetComponent<NetworkManagerUI>();
-        lobbyManager.AddNewPlayer(this, OwnerClientId);
-        Debug.Log($"Clientcontroller for clientID {OwnerClientId} succesfully setup!");
+        // NetworkManagerUI lobbyManager = GameObject.Find("NetworkManagerUI").GetComponent<NetworkManagerUI>();
+       // serverManager.AddNewPlayerServerRpc(this, OwnerClientId);
+       // Debug.Log($"Clientcontroller for clientID {OwnerClientId} succesfully setup!");
     }
 
     [ClientRpc]
     public void UpdateScoreClientRpc(ulong playerID)
     {
-        Debug.Log($"{OwnerClientId} gained one point!");
-        if(playerID == OwnerClientId) playerScore.Value += 1;
-        else Debug.Log($"And that wasn't me :(");
+        //Debug.Log($"{OwnerClientId} gained one point!");
+        if(playerID == OwnerClientId)
+        {
+            playerScore.Value += 1;
+            Debug.Log("sus");
+        }
+        //Debug.Log(playerScore.Value);
+    }
+
+    [ClientRpc]
+    public void StartGameClientRpc()
+    {
+        gameStarted = true;
+        GameObject.Find("NetworkManagerUI").GetComponent<NetworkManagerUI>().StartGameClientRpc();
     }
 
 }

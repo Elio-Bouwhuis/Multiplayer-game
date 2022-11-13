@@ -121,10 +121,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de22b6eb21f313744b4a379f6c10cd41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: 0
   force: 0.1
+  gameStarted: 0
+  gameTimer: {fileID: 8619799229152638377, guid: 14928cf4c953d0b49afb48cf8488b517, type: 3}
   spawnedObjectPrefab: {fileID: 4802539185917164, guid: 4eca7a8ef879cfb41b294a8c0d69ea58, type: 3}
-  scorePlayerOne: {fileID: 8104221778599992054, guid: e0b45dcca58da064c855324dc44eea32, type: 3}
-  scorePlayerTwo: {fileID: 1648198710796596883, guid: 194aaefaa6d2399419012fa6716de76d, type: 3}
+  coinSound: {fileID: 8300000, guid: c7e348c38b2a7624d8407a3b69b69421, type: 3}
   playerScore:
     m_InternalValue: 0
 --- !u!114 &5763902901137223223
