@@ -135,7 +135,7 @@ public class NetworkManagerUI : NetworkBehaviour
         }
     }
 
-    public void AddNewPlayer(PlayerNetwork _clientController, ulong _clientId)
+    /*public void AddNewPlayer(PlayerNetwork _clientController, ulong _clientId)
     {
         clientControllers.Add(_clientId, _clientController);
         Debug.Log($"{_clientId} connected!");
@@ -145,5 +145,5 @@ public class NetworkManagerUI : NetworkBehaviour
     {
         Debug.Log($"{playerID} collected a point!");
         clientControllers[playerID].UpdateScoreClientRpc(playerID);
-    }
+    }*/
 }

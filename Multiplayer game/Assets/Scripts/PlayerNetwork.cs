@@ -11,6 +11,7 @@ public class PlayerNetwork : NetworkBehaviour
     ServerManager serverManager;
 
     public int player;
+    public ulong networkObjectId;
 
     public float force;
 
@@ -146,13 +147,14 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (other.gameObject.tag == "Ball")
         {
-            Debug.Log("tedsta");
-            //spawnedObjectTransform.GetComponent<NetworkObject>().networkid
-            serverManager.BallCollectedServerRpc(player);//, networkid/networkobjectid
-            Debug.Log("tedst3112da");
+            //Debug.Log("tedsta");
+            serverManager.BallCollectedServerRpc(player, networkObjectId);
+            networkObjectId = other.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
+            //Debug.Log(networkObjectId);
+            //Debug.Log("tedst3112da");
             AudioSource.PlayClipAtPoint(coinSound,transform.position,1);
-            spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
-            Debug.Log("tedst3112da31231d");
+            //spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
+            //Debug.Log("tedst3112da31231d");
         }
     }
 
