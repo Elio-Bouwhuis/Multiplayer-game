@@ -134,16 +134,4 @@ public class NetworkManagerUI : NetworkBehaviour
             }
         }
     }
-
-    /*public void AddNewPlayer(PlayerNetwork _clientController, ulong _clientId)
-    {
-        clientControllers.Add(_clientId, _clientController);
-        Debug.Log($"{_clientId} connected!");
-    }
-    [ServerRpc(RequireOwnership = false)]
-    public void BallCollectedServerRpc(ulong playerID)
-    {
-        Debug.Log($"{playerID} collected a point!");
-        clientControllers[playerID].UpdateScoreClientRpc(playerID);
-    }*/
 }

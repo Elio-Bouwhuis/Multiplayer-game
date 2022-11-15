@@ -22,42 +22,12 @@ public class PlayerNetwork : NetworkBehaviour
     private int time = 300;
     private float timePassed = 0f;
 
-    //private bool toggle = false;
-
     [SerializeField] private Transform spawnedObjectPrefab;
     private Transform spawnedObjectTransform;
 
-    // [SerializeField] TextMeshProUGUI scorePlayerOne;
-    // [SerializeField] TextMeshProUGUI scorePlayerTwo;
-
     public AudioClip coinSound;
 
-    //[SerializeField] TextMeshProUGUI gameTimer;
-
-    //[SerializeField] private Button startBtnBtn;
-    //[SerializeField] private GameObject startBtn;
-
     public NetworkVariable<int> playerScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
-    /*private NetworkVariable<MyCustomData> randomNumber = new NetworkVariable<MyCustomData>(
-        new MyCustomData {
-            _int = 56,
-            _bool = true,
-        }, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
-    public struct MyCustomData : INetworkSerializable
-    {
-        public int _int;
-        public bool _bool;
-        public FixedString128Bytes message;
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref _int);
-            serializer.SerializeValue(ref _bool);
-            serializer.SerializeValue(ref message);
-        }
-    }*/
 
     [ClientRpc]
     public void SetPlayerNumberClientRpc(int _player)
@@ -72,28 +42,6 @@ public class PlayerNetwork : NetworkBehaviour
         serverManager.AddNewPlayer(this, OwnerClientId);
         time = 300;
         timePassed = 0f;
-        // scorePlayerOne = GameObject.Find("ScorePlayerOne").GetComponent<TextMeshProUGUI>();
-        // scorePlayerTwo = GameObject.Find("ScorePlayerTwo").GetComponent<TextMeshProUGUI>();
-        /*playerScore.OnValueChanged += (int previousValue, int newValue) =>
-        {
-            Debug.Log(OwnerClientId + " " + playerScore.Value);
-            if(OwnerClientId == 0)
-            {
-                scorePlayerOne.text = "Player 1: " + playerScore.Value;
-                Debug.Log("PLAYER 1 ball destoyed");
-            }
-            else if(OwnerClientId == 1)
-            {
-                scorePlayerTwo.text = "Player 2: " + playerScore.Value;
-                Debug.Log("PLAYER 2 ball destoyed");
-            }
-            //TestClientRpc(new ClientRpcParams { Send = new ClientRpcSendParams { TargetClientIds = new List<ulong> { 1 } } });
-            //TestServerRpc(new ServerRpcParams());
-        };
-        /*randomNumber.OnValueChanged += (MyCustomData previousValue, MyCustomData newValue) =>
-        {
-            Debug.Log(OwnerClientId + " random number: " + newValue._int + " " + newValue._bool + " " + newValue.message);
-        };*/
     }
     private void Start()
     {
@@ -128,18 +76,6 @@ public class PlayerNetwork : NetworkBehaviour
                 }
             }
         }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            //playerScore.Value += 1;
-            //TestClientRpc();
-            /*randomNumber.Value = new MyCustomData
-            {
-                _int = 10,
-                _bool = false,
-                message = "wooo dit werkt",
-            };*/
-        }
         transform.Translate(Input.GetAxisRaw("Horizontal") * force, 0, Input.GetAxisRaw("Vertical") * force);
     }
 
@@ -147,14 +83,10 @@ public class PlayerNetwork : NetworkBehaviour
     {
         if (other.gameObject.tag == "Ball")
         {
-            //Debug.Log("tedsta");
             serverManager.BallCollectedServerRpc(player, networkObjectId);
             networkObjectId = other.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
-            //Debug.Log(networkObjectId);
-            //Debug.Log("tedst3112da");
+            other.gameObject.SetActive(false);
             AudioSource.PlayClipAtPoint(coinSound,transform.position,1);
-            //spawnedObjectTransform.GetComponent<NetworkObject>().Despawn(true);
-            //Debug.Log("tedst3112da31231d");
         }
     }
 
@@ -163,17 +95,7 @@ public class PlayerNetwork : NetworkBehaviour
     {
         var clientId = serverRpcParams.Receive.SenderClientId;
         Debug.Log(clientId);
-
-        //Debug.Log("test server rpc " + OwnerClientId + " " + serverRpcParams.Receive.SenderClientId);
     }
-
-    /*[ClientRpc]
-    private void TestClientRpc(ClientRpcParams clientRpcParams)
-    {
-        //scorePlayerTwo = GameObject.Find("ScorePlayerTwo").GetComponent<TextMeshProUGUI>();
-        //scorePlayerTwo.text = "Player 2: " + playerScore.Value;
-        Debug.Log("TestClientRpc");
-    }*/
 
     [ServerRpc (RequireOwnership = false)]
     public void AfterClientSetupServerRpc()
@@ -186,13 +108,11 @@ public class PlayerNetwork : NetworkBehaviour
     [ClientRpc]
     public void UpdateScoreClientRpc(ulong playerID)
     {
-        //Debug.Log($"{OwnerClientId} gained one point!");
         if(playerID == OwnerClientId)
         {
             playerScore.Value += 1;
             Debug.Log("sus");
         }
-        //Debug.Log(playerScore.Value);
     }
 
     [ClientRpc]

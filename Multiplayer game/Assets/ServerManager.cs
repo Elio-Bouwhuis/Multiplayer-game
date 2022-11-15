@@ -35,27 +35,16 @@ public class ServerManager : NetworkBehaviour
     [ServerRpc]
     public void BallCollectedServerRpc(int player, ulong networkObjectId)
     {
-        //Destroy that object met networkid
-        //Debug.Log(networkObjectId);
         var objects = GameObject.FindGameObjectsWithTag("Ball");
         var objectCount = objects.Length;
         for(int i = 0; i < objectCount; i++)
         {
-            //Debug.Log(networkObjectId);
-            //Debug.Log(objects[i].GetComponent<NetworkObject>().NetworkObjectId);
             if(objects[i].GetComponent<NetworkObject>().NetworkObjectId == networkObjectId)
             {
                 objects[i].GetComponent<NetworkObject>().Despawn(true);
             }
         }
-        /*foreach(var obj in objects)
-        {
-            if (obj.GetComponent<NetworkObject>().NetworkObjectId == networkObjectId)
-            {
-                obj.GetComponent<NetworkObject>().Despawn(true);
-            }
-        }*/
-        //GetComponent<NetworkObject>().Despawn(true);
+
         if (player == 1) playerOneScore++;
         else playerTwoScore++;
         Debug.Log($"{player} collected a point!");
