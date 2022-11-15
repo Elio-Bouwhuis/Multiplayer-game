@@ -25,7 +25,7 @@ public class PlayerNetwork : NetworkBehaviour
     [SerializeField] private Transform spawnedObjectPrefab;
     private Transform spawnedObjectTransform;
 
-    public AudioClip coinSound;
+    //public AudioClip coinSound;
 
     public NetworkVariable<int> playerScore = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
@@ -86,7 +86,7 @@ public class PlayerNetwork : NetworkBehaviour
             serverManager.BallCollectedServerRpc(player, networkObjectId);
             networkObjectId = other.gameObject.GetComponent<NetworkObject>().NetworkObjectId;
             other.gameObject.SetActive(false);
-            AudioSource.PlayClipAtPoint(coinSound,transform.position,1);
+            //AudioSource.PlayClipAtPoint(coinSound,transform.position,1);
         }
     }
 

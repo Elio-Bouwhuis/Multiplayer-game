@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class ServerManager : NetworkBehaviour
 {
+    public AudioClip coinSound;
+
     int playerOneScore, playerTwoScore;
     [SerializeField] TextMeshProUGUI scorePlayerOne;
     [SerializeField] TextMeshProUGUI scorePlayerTwo;
@@ -35,6 +37,7 @@ public class ServerManager : NetworkBehaviour
     [ServerRpc]
     public void BallCollectedServerRpc(int player, ulong networkObjectId)
     {
+        AudioSource.PlayClipAtPoint(coinSound, transform.position, 1);
         var objects = GameObject.FindGameObjectsWithTag("Ball");
         var objectCount = objects.Length;
         for(int i = 0; i < objectCount; i++)
