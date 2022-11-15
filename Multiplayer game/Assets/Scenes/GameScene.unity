@@ -1282,6 +1282,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1014922780733111512, guid: eeebf97ed5f4cea458146146b82f16a3, type: 3}
+      propertyPath: coinSound
+      value: 
+      objectReference: {fileID: 8300000, guid: c7e348c38b2a7624d8407a3b69b69421, type: 3}
     - target: {fileID: 459124212796065502, guid: eeebf97ed5f4cea458146146b82f16a3, type: 3}
       propertyPath: m_Name
       value: Servermanager
